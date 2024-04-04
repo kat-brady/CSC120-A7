@@ -19,7 +19,13 @@ public class Library extends Building {
       System.out.println(title + " has been added to " + this.name + ".");
     }
 
+    //*Overloaded method to addTitle */
+    public void addTitle() {
+      this.collection.put("The Color Purple by Alice Walker", true); //if the user forgets to input the title of the book they want to add, add a default
+      System.out.println("Looks like you forgot to specify which book you wanted to add. " + this.name + " decided to add a copy of The Color Purple by Alice Walker in your name.");
+    }
 
+    //* Public method to removeTitle */
     public String removeTitle(String title){ //removes a book from the library collection
       if (this.collection.containsKey(title)) { //checks if the library has the book
         this.collection.remove(title); //if so, it is removed
@@ -38,7 +44,14 @@ public class Library extends Building {
       }
       return title;
     }
+
+     //* overloaded method to remove all titles */
+     public void removeTitle(){ //removes all books from the library collection
+      this.collection.clear();
+      System.out.println(this.name + " now has " + this.collection.size() + " books in its collection. How sad!");
+    }
     
+    //* Public method to checkOut */
     public void checkOut(String title){ //method to update that a book is checked out and no longer available
       if (!this.collection.containsKey(title)) { //checks if that book is not in the library's collection first
         throw new RuntimeException(this.name + " doesn't have a copy of " + title + ", so it could not be checked out.");
@@ -58,7 +71,7 @@ public class Library extends Building {
       }
     }
     
-
+    //* Public method to returnBook */
     public void returnBook(String title){ //method to update that a book is available again
       if (!this.collection.containsKey(title)) { //checks if that book is not in the library's collection first
         System.out.println(this.name + " has never had " + title + " in the collection. Are you sure you want to try to return it? (yes/no)"); //allows user to choose to contiue with error or rectify mistake
@@ -78,7 +91,7 @@ public class Library extends Building {
       }
     }
 
-
+    //* public method containsTitle */
     public boolean containsTitle(String title){  // returns true if the title appears as a key in the Libary's collection, false otherwise
       if (this.collection.containsKey(title)) { //if title is in collection
         System.out.println(this.name + " has at least one copy of " + title + ".");
@@ -88,6 +101,8 @@ public class Library extends Building {
         return false;
       }
     }
+
+    //* Public method isAvailable */
     public boolean isAvailable(String title) { // returns true if the title is currently available, false otherwise
       if (!this.collection.containsKey(title)) { //if title is not in collection, have different text to show that no copies will become available
         System.out.println("Unfortunately, " + this.name + " doesn't own any copies of " + title + ".");
@@ -102,10 +117,13 @@ public class Library extends Building {
       }
     }
 
+    //* public method printCollection */
     public void printCollection() {// prints out the entire collection in an easy-to-read way (including checkout status)
       for (Map.Entry<String,Boolean> book : collection.entrySet()) { //for each individual book in the full hashtable collection
         System.out.println(this.name + " currently has " + book.getKey() + " in its collection."); //print that the book is available
           isAvailable(book.getKey()); //use preexisting isAvailable function to easily display the book's status
+      } if (this.collection.size() == 0) {
+        System.out.println("Oh, my! There are no books in " + this.name + "'s collection!");
       }
     }
 
@@ -162,6 +180,9 @@ public class Library extends Building {
       library.addTitle("The Lorax by Dr. Seuss");
       library.checkOut("The Lorax by Dr. Seuss");
       library.addTitle("East of Eden by John Steinbeck");
+      library.printCollection();
+      library.removeTitle();
+      library.addTitle();
       library.printCollection();
     }
   

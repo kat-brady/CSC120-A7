@@ -26,7 +26,7 @@ Listed below are various aspects of the assignment.  When you turn in your work,
 
 **YES** 1 pt: The `House` class includes at least 2 overloaded methods
 
-_____ 1 pt: The `Library` class includes at least 2 overloaded methods
+**yes** 1 pt: The `Library` class includes at least 2 overloaded methods
 
 **YES** 1 pt: The `Cafe` class includes at least 2 overloaded methods
 
@@ -34,7 +34,7 @@ _____ 1 pt: The `Library` class includes at least 2 overloaded methods
 
 **YES** 1 pt: The `main(...)` method in `CampusMap.java` has been modified to include at least 10 `Building`s (or `Building` subclasses)
 
-_____ 1 pt: The `CampusMap` includes at least one instance of each class: a `House`, a `Library`, a `Cafe`, and a `Building` (demonstrating that each constructor works as expected)
+**yes** 1 pt: The `CampusMap` includes at least one instance of each class: a `House`, a `Library`, a `Cafe`, and a `Building` (demonstrating that each constructor works as expected)
 
 
 
