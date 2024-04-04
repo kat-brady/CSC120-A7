@@ -4,12 +4,16 @@ import java.util.*;
 public class Library extends Building {
   private Hashtable<String, Boolean> collection; //initializes hashtable for library collection
   static Scanner scanner = new Scanner(System.in); //initializes scanner for user input
+  private boolean hasElevator; //initializes boolean for elevator
 
-    public Library(String name, String address, int nFloors) { //constructs library using attributes from parent class
+  //*Library constructor */
+    public Library(String name, String address, int nFloors, boolean hasElevator) { //constructs library using attributes from parent class
       super(name, address, nFloors); //imports existing classifications from Building
       this.collection = new Hashtable<String, Boolean>(); //the collection of books in the library
+      this.hasElevator = hasElevator;
     }
-    
+
+    //*Public method to addTitle */
     public void addTitle(String title) { //adds a new book to the library collection
       this.collection.put(title, true); //title for the book's name and author; true meaning it is now in the library
       System.out.println(title + " has been added to " + this.name + ".");
@@ -53,6 +57,7 @@ public class Library extends Building {
         System.out.println("Success! You have now checked out " + title + ". Please return it in two weeks.");
       }
     }
+    
 
     public void returnBook(String title){ //method to update that a book is available again
       if (!this.collection.containsKey(title)) { //checks if that book is not in the library's collection first
@@ -72,6 +77,7 @@ public class Library extends Building {
         System.out.println("Success! You have now returned " + title + ". Thank you!");
       }
     }
+
 
     public boolean containsTitle(String title){  // returns true if the title appears as a key in the Libary's collection, false otherwise
       if (this.collection.containsKey(title)) { //if title is in collection
@@ -103,18 +109,60 @@ public class Library extends Building {
       }
     }
 
+    //*Modifies method goToFloor to account for hasElevator != true */
+    public void goToFloor(int floorNum) {
+      if(hasElevator) {
+        super.goToFloor(floorNum);
+      }
+      else {
+        if (this.activeFloor == -1) {
+          throw new RuntimeException("You are not inside this Building. Must call enter() before navigating between floors.");
+        }
+         else if (floorNum < 1 || floorNum > this.nFloors) {
+            throw new RuntimeException("Invalid floor number. Valid range for this Building is 1-" + this.nFloors +".");
+       } else {
+          System.out.println(this.name + " does not have an elevator. Must an old library. Do you want to travel by stairs or continue trying to take an elevator? (stairs/elevator)");
+          String response = scanner.nextLine(); //utilizes scanner
+          if (response.equals("elevator")) { //if they still try to take the elevator that does not exist
+            throw new RuntimeException("There is no elevator. You can't teleport!");
+          }
+          else if (response.contains("stairs")) {  //if the user says stairs
+            int num = floorNum;
+            while (num != 1) { //while you have not reached the desired floor
+              if (this.activeFloor == -1) {
+                throw new RuntimeException("You are not inside this Building. Must call enter() before navigating between floors.");
+            }
+              if (floorNum < 1 || floorNum > this.nFloors) {
+                throw new RuntimeException("Invalid floor number. Valid range for this Building is 1-" + this.nFloors +".");
+            } else{
+              System.out.println("Walking up...");
+              System.out.println("You are now on floor #" + (floorNum-num+2) + " of " + this.name);
+              this.activeFloor = floorNum;
+              num-=1; //subtract 1 from the total desired floor
+              }
+          }
+          }else {
+            throw new RuntimeException("You must enter 'stairs' or 'elevator'."); //if they don't enter yes or no, throw exception
+            }
+         }
+      }
+    }
+    //* Public modification of showOptions specific to library class */
+    public void showOptions() {
+      super.showOptions();
+      System.out.println(" + addTitle(string)\n + removeTitle(string)\n + checkOut(string)\n + returnBook(string)\n + containsTitle(string)\n + isAvailable(string)\n + printCollection()");
+  }
+
       public static void main(String[] args) {
-      Library library = new Library("Forbes Library", "20 West Street", 3);
+      Library library = new Library("Forbes Library", "20 West Street", 3, true);
       System.out.println(library);
+      library.showOptions();
+      library.enter();
+      library.goToFloor(2);
       library.addTitle("The Lorax by Dr. Seuss");
       library.checkOut("The Lorax by Dr. Seuss");
       library.addTitle("East of Eden by John Steinbeck");
       library.printCollection();
-      library.returnBook("The Lorax by Dr. Seuss");
-      library.removeTitle("The Lorax by Dr. Seuss");
-      library.removeTitle("The Lorax by Dr. Seuss");
-      
-      scanner.close();
     }
   
   }

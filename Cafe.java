@@ -8,6 +8,7 @@ public class Cafe extends Building{ //establishes cafe as a child of parent clas
     private int nCups; // The number of cups remaining in inventory
     static Scanner scanner = new Scanner(System.in); //initializes scanner for user input
 
+    //* Cafe constructor */
     public Cafe(String name, String address, int nFloors, int nCoffeeOunces, int nSugarPackets, int nCreams, int nCups) { //establishes cafe using attributes from parent class and specific cafe attributes
         super(name, address, nFloors); //imports attributes from building
         this.nCoffeeOunces= nCoffeeOunces; //the cafe's number of Coffee Ounces
@@ -16,6 +17,12 @@ public class Cafe extends Building{ //establishes cafe as a child of parent clas
         this.nCups = nCups; //the cafe's number of cups
     }
 
+    //*Overloaded cafe constructor */
+    public Cafe(String name, String address) {
+        this(name, address, 1, 200, 100, 100, 50); //sets a default for values if not included
+    }
+
+    //* Restock method */
     private void restock(int nCoffeeOunces, int nSugarPackets, int nCreams, int nCups) { //method to restock any supplies needed to sell a coffee
         System.out.println("What supply do you need to restock? (coffee, sugar, creamer, cups)");
         String restockTarget = scanner.nextLine(); //sets scanner's "target"
@@ -64,7 +71,7 @@ public class Cafe extends Building{ //establishes cafe as a child of parent clas
 
         }
     }
-
+    //* sellCoffee Method */
     public void sellCoffee(int size, int nSugarPackets, int nCreams) { //method to sell coffee
         System.out.println("You are trying to sell a coffee. Checking inventory...");
         while (this.nCoffeeOunces < size || this.nSugarPackets < nSugarPackets || this.nCreams < nCreams || this.nCups < 1) { //if there are fewer supplies than the number needed to make the coffee
@@ -96,7 +103,31 @@ public class Cafe extends Building{ //establishes cafe as a child of parent clas
         }
     }
 
-    
+     //* overloaded sellCoffee Method */
+     public void sellCoffee(int size) { //method to sell coffee
+        System.out.println("You are trying to sell a coffee. Checking inventory...");
+        while (this.nCoffeeOunces < size || this.nSugarPackets < nSugarPackets || this.nCreams < nCreams || this.nCups < 1) { //if there are fewer supplies than the number needed to make the coffee
+            if (this.nCoffeeOunces < size) { //if coffee is less than amount needed
+                int difference= size - nCoffeeOunces; //name the difference to use it in the instructional statement to follow
+                System.out.println("Whoops! Looks like you'll need to restock your coffee first. Add at least " + difference + " ounce(s) of coffee."); //tells the user how much they need to add when restocking
+            }
+            else if (this.nCups < 1) { //if there are no cups
+                System.out.println("You can't sell a coffee without a cup! Restock at least 1 cup first."); //tell user to add a cup
+            }
+            restock(size, nSugarPackets, nCreams, nCreams); //call restock
+        }if (this.nCoffeeOunces >= size ||this.nSugarPackets >= nSugarPackets||this.nCreams >= nCreams|| this.nCups >= 1){ //if there is enough of all supplies to make the coffee, using an if instead of else or else if statement so that a successfully restocked cafe can go through this process
+            this.nCoffeeOunces-=size; //removes used coffee from inventory
+            this.nSugarPackets-=nSugarPackets; //removes used sugar packets from inventory
+            this.nCreams-=nCreams; //removes used creams from inventory
+            this.nCups-=1; //removes the used cup from inventory
+            System.out.println("Success! " + this.name + " has just sold a black coffee made with " + size + " ounce(s) of coffee.");
+            System.out.println("The new inventory is " + this.nCoffeeOunces + " ounce(s) of coffee, " + this.nSugarPackets + " packet(s) of sugar, " + this.nCreams + " splash(es) of cream, and " + this.nCups + " available cup(s).");
+        }else { //if you get to this else statement, you restocked incorrectly the first time, so you have to do it again
+            restock(size, nSugarPackets, nCreams, nCreams); //calls restock
+        }
+    }
+
+    //* modified toString */
     public String toString() { //public adjustment of toString to add extra details to readout of cafe
         String desc = super.toString(); //sets the default desc to have the attributes from the parent, but will allow to add more details
         if (this.nCoffeeOunces == 0) { //if there is no coffee, use custom text to share that
@@ -130,10 +161,41 @@ public class Cafe extends Building{ //establishes cafe as a child of parent clas
         return desc;
     }
 
+    //* modified showOptions menu */
+    public void showOptions() { //public adjustment of show options
+        super.showOptions();
+        System.out.println(" + sellCoffee(int size, int nSugarPackets, int nCreams)");
+    }
+
+    /*Modified Method since cafes do not have elevators
+     * checks if inside building
+     * checks if desired floor is in range
+     * checks if the cafe has more than 1 floor
+     * offers option to use stairs instead
+     */
+    public void goToFloor(int floorNum) {
+        if (this.activeFloor == -1) {
+            throw new RuntimeException("You are not inside this Building. Must call enter() before navigating between floors.");
+        }
+        else if (floorNum < 1 || floorNum > this.nFloors) {
+            throw new RuntimeException("Invalid floor number. Valid range for this Building is 1-" + this.nFloors +".");
+        }
+        else if(floorNum == 1){
+            System.out.println("You are already on the first floor. No need to go anywhere.");
+        } else{
+            throw new RuntimeException("There are no additional floors available to the public. You must stay on the first floor.");
+        }
+    }
+    
+
     public static void main(String[] args) {
         Cafe cafe =new Cafe("The Roost", "1 Market Street", 1, 30, 100, 50, 25);
         System.out.println(cafe);
+        cafe.showOptions();
+        cafe.enter();
+        cafe.goToFloor(1);
         cafe.sellCoffee(100, 1, 1);
+        cafe.sellCoffee(1);
     }
     
 }
